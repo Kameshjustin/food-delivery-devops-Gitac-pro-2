@@ -10,26 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+              
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
 
        # Frontend
-       - run: npm ci
+       - name: Frontend install
+         run: npm ci
          working-directory: frontend
 
-       - run: npm run build
+       - name: Front build
+         run: npm run build
          working-directory: frontend
 
-       # Admin 
-       - run: npm ci
+       # Admin
+       - name: Admin install 
+         run: npm ci
          working-directory: admin
 
-       - run: npm run build
-          working-directory: admin
+       - name: Admin build
+         run: npm run build
+         working-directory: admin
 
        # Backend
-       - run: npm ci
+       - name: Backend install
+         run: npm ci
          working-directory: backend
