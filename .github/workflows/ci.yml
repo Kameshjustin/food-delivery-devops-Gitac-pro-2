@@ -1,0 +1,35 @@
+name: Food Delivery CI
+
+on: 
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+       # Frontend
+       - run: npm ci
+         working-directory: frontend
+
+       - run: npm run build
+         working-directory: frontend
+
+       # Admin 
+       - run: npm ci
+         working-directory: admin
+
+       - run: npm run build
+          working-directory: admin
+
+       # Backend
+       - run: npm ci
+         working-directory: backend
