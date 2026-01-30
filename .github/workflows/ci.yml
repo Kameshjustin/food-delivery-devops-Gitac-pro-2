@@ -1,6 +1,6 @@
 name: Food Delivery CI
 
-on: 
+on:
   push:
     branches: [main]
   pull_request:
@@ -12,31 +12,31 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-              
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
        # Frontend
-       - name: Frontend install
-         run: npm ci
-         working-directory: frontend
+      - name: Frontend install
+        run: npm ci
+        working-directory: frontend
 
-       - name: Front build
-         run: npm run build
-         working-directory: frontend
+      - name: Front build
+        run: npm run build
+        working-directory: frontend
 
        # Admin
-       - name: Admin install 
-         run: npm ci
-         working-directory: admin
+      - name: Admin install
+        run: npm ci
+        working-directory: admin
 
-       - name: Admin build
-         run: npm run build
-         working-directory: admin
+      - name: Admin build
+        run: npm run build
+        working-directory: admin
 
        # Backend
-       - name: Backend install
-         run: npm ci
+      - name: Backend install
+        run: npm ci
          working-directory: backend
