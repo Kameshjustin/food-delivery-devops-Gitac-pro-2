@@ -1,0 +1,62 @@
+name: Food Delivery CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+       # Frontend
+      - name: Build frontend
+        working-directory: frontend
+        run:  |
+          npm ci
+          npm run build
+
+      - name: Deploy frontend
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: "frontend/dist/*"
+          target: "/var/www/food-delivery/frontend"
+
+       # Admin
+     - name: Build admin
+       working-directory: admin
+       run:  |
+         npm ci
+         npm run build
+     - name: Deploy admin
+       uses: appleboy/scp-action@v0.1.7
+       with:
+         hosts: ${{ secrets.EC2_HOST }}
+         username: ${{ secrets.EC2_USER }}
+         key: ${{ secrets.EC2_KEY }}
+         source: "admin/dist/*"
+         target: "/var/www/food-delivery/admin"
+
+       # Backend
+     - name: Deploy backend
+       uses: appleboy/ssh-action@v1.0.3
+       with:
+         host: ${{ secrets.EC2_HOST }}
+         username: ${{ secrets.EC2_USER }}
+         key: ${{ secrets.EC2_KEY }}
+         script:  |
+           cd /var/www/food-delivery/backend
+           git pull origin main || git clone https://github.com/Kameshjustin/food-delivery-devops-Gitac-pro-2.git  .
+           npm ci
+           pm2 restart backend || pm2 start server.js --name backend 
